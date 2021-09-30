@@ -133,9 +133,9 @@ const ProductEditScreen = ({ match, history }) => {
                 placeholder="Enter image url"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-              ></Form.Control>
+              ></Form.Control>  
                 <Form.File id="image-file" label="Choose File" custom onChange={uploadHandler}></Form.File>
-              {uploading && <Loader/>}
+              {uploading && <Loader/>} 
             </Form.Group>
             <Form.Group controlId="brand" className="py-3">
               <Form.Label>Enter Brand Name</Form.Label>

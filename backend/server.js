@@ -6,11 +6,16 @@ import productRoutes from "./routes/productRoutes.js";
 import userRoute from "./routes/userRoutes.js";
 import orderRoute from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import morgan from "morgan";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 dotenv.config();
 connectDB();
 const app = express();
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
