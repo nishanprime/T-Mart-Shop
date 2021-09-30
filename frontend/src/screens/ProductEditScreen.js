@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
+import axios from "axios"
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { listProducts, updateProduct } from "../actions/productActions";
@@ -18,6 +18,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const productDetail = useSelector((state) => state.productDetail);
   const { loading, error, product } = productDetail;
@@ -31,6 +32,29 @@ const ProductEditScreen = ({ match, history }) => {
   } = productUpdate;
 
   const dispatch = useDispatch();
+
+  const uploadHandler=async (e)=>{
+    // e.preventDefault()
+    console.log(e)
+    const file=e.target.files[0]
+    const formData=new FormData()
+    formData.append("image", file)
+    setUploading(true)
+    try {
+      const config={
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
+      }
+      const {data}=await axios.post("/api/upload",formData,config)
+      setImage(data)
+      setUploading(false)
+    } catch (error) {
+      console.log(error, " From uploadHandler in ProductEditScreen")
+      setUploading(false)
+      
+    }
+  }
 
   useEffect(() => {
     if (successUpdate) {
@@ -110,6 +134,8 @@ const ProductEditScreen = ({ match, history }) => {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
+                <Form.File id="image-file" label="Choose File" custom onChange={uploadHandler}></Form.File>
+              {uploading && <Loader/>}
             </Form.Group>
             <Form.Group controlId="brand" className="py-3">
               <Form.Label>Enter Brand Name</Form.Label>
@@ -119,6 +145,7 @@ const ProductEditScreen = ({ match, history }) => {
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
+            
             </Form.Group>
 
             <Form.Group controlId="category" className="py-3">
